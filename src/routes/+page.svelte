@@ -1,2 +1,14 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+    import Node from "../components/Node.svelte";
+    export let data;
+</script>
+
+<div class="root">
+    <Node node={data} />
+</div>
+
+<style>
+    .root {
+        font-family: 'fira code', monospace;
+    }
+</style>
