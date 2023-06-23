@@ -4,6 +4,7 @@
 
 	/** @type HTMLInputElement */
 	let input;
+	let input2;
 	/** @type Color */
 	let color;
 	/** @type String */
@@ -16,7 +17,7 @@
 
 		colors = colors.map((c) => {
 			/** @type Color */
-			let c1 = c.calc(color);
+			let c1 = calc(color, c.total, c.step, c.goalLightness);
 			c.hsl = c1.to('hsl', {}).toString();
 			c.rgb = c1.to('srgb', {}).toString();
 			c.oklch = c1.to('oklch', {}).toString();
@@ -24,152 +25,87 @@
 			return c;
 		});
 	};
+	/** @type String */
+	let text1 = '#fff';
+	/** @type String */
+	let text2 = '#000';
+	let calculateText = () => {
+		let color = new Color(input2.value);
+
+		text2 = color.to('oklch', {}).toString();
+		color.oklch.l = 1 - color.oklch.l;
+		text1 = color.to('oklch', {}).toString();
+	};
+
+	let calc = (color, total = 1, step = 0, goalLightness) => {
+		let c = color.to('oklch');
+		c.c = (c.c * (total - step)) / total;
+		let lightnessPath = Number.isFinite(goalLightness) ? goalLightness - c.l : c.l;
+		c.l = c.l + (lightnessPath * step * step) / total / total;
+		return c;
+	};
 	let colors = [
-		{
-			id: 25,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 1) / 8;
-				c.l = c.l + ((1 - c.l) * 7) / 8;
-				return c;
-			}
-		},
-		{
-			id: 50,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 2) / 8;
-				c.l = c.l + ((1 - c.l) * 6) / 8;
-				return c;
-			}
-		},
-		{
-			id: 100,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 3) / 8;
-				c.l = c.l + ((1 - c.l) * 5) / 8;
-				return c;
-			}
-		},
-		{
-			id: 200,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 4) / 8;
-				c.l = c.l + ((1 - c.l) * 4) / 8;
-				return c;
-			}
-		},
-		{
-			id: 300,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 5) / 8;
-				c.l = c.l + ((1 - c.l) * 3) / 8;
-				return c;
-			}
-		},
-		{
-			id: 400,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 6) / 8;
-				c.l = c.l + ((1 - c.l) * 2) / 8;
-				return c;
-			}
-		},
-		{
-			id: 500,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 7) / 8;
-				c.l = c.l + ((1 - c.l) * 1) / 8;
-				return c;
-			}
-		},
-		{ id: 600, calc: (color) => color.to('oklch') }, // base
-		{
-			id: 700,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 7) / 8;
-				c.l = (c.l * 7) / 8;
-				return c;
-			}
-		},
-		{
-			id: 800,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 6) / 8;
-				c.l = (c.l * 6) / 8;
-				return c;
-			}
-		},
-		{
-			id: 900,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 5) / 8;
-				c.l = (c.l * 5) / 8;
-				return c;
-			}
-		},
-		{
-			id: 1000,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 4) / 8;
-				c.l = (c.l * 4) / 8;
-				return c;
-			}
-		},
-		{
-			id: 1100,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 3) / 8;
-				c.l = (c.l * 3) / 8;
-				return c;
-			}
-		},
-		{
-			id: 1200,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 2) / 8;
-				c.l = (c.l * 2) / 8;
-				return c;
-			}
-		},
-		{
-			id: 1300,
-			calc: (color) => {
-				let c = color.to('oklch');
-				c.c = (c.c * 1) / 8;
-				c.l = (c.l * 1) / 8;
-				return c;
-			}
-		}
+		{ id: 25, total: 8, step: 7, goalLightness: 1 },
+		{ id: 50, total: 8, step: 6, goalLightness: 1 },
+		{ id: 100, total: 8, step: 5, goalLightness: 1 },
+		{ id: 200, total: 8, step: 4, goalLightness: 1 },
+		{ id: 300, total: 8, step: 3, goalLightness: 1 },
+		{ id: 400, total: 8, step: 2, goalLightness: 1 },
+		{ id: 500, total: 8, step: 1, goalLightness: 1 },
+		{ id: 600, base: true },
+		{ id: 700, total: 8, step: 1, goalLightness: 0 },
+		{ id: 800, total: 8, step: 2, goalLightness: 0 },
+		{ id: 900, total: 8, step: 3, goalLightness: 0 },
+		{ id: 1000, total: 8, step: 4, goalLightness: 0 },
+		{ id: 1100, total: 8, step: 5, goalLightness: 0 },
+		{ id: 1200, total: 8, step: 6, goalLightness: 0 },
+		{ id: 1300, total: 8, step: 7, goalLightness: 0 }
 	];
 
-	// calculate();
-	onMount(calculate);
+	onMount(() => {
+		calculate();
+		calculateText();
+	});
 </script>
 
 <input type="color" bind:this={input} on:change={calculate} on:blur={calculate} value="#3EA2CD" />
+<input
+	type="color"
+	bind:this={input2}
+	on:change={calculateText}
+	on:blur={calculateText}
+	value="#000"
+/>
 
 <pre>{color}</pre>
 <pre>{colorOklch}</pre>
+<pre>{text1}</pre>
+<pre>{text2}</pre>
 <table>
-	{#each colors as { id, hsl, oklch, rgb }}
-		<tr>
+	{#each colors.filter(({ hsl }) => hsl && text1 && text2) as { total, step, base, id, hsl, oklch, rgb }}
+		<tr
+			style={`
+			width: 10rem;
+			height: 2rem;
+			background-color: ${oklch};
+			color: ${Color.contrastWCAG21(oklch, text1) > Color.contrastWCAG21(oklch, text2) ? text1 : text2}
+		`}
+		>
+			<td>{base ? '➡️' : '⚪️'}</td>
 			<td>{id}</td>
-			<td style="width: 10rem; height: 2rem; background-color: {hsl}" />
+			<td>{total}</td>
+			<td>{step}</td>
 			<td>{hsl}</td>
 			<td>{rgb}</td>
 			<td>{oklch}</td>
+			<td>
+				{Color.contrastWCAG21(hsl, text1) > 2.9 ? '✅' : '❌'}
+				{Color.contrastWCAG21(hsl, text1)}
+			</td>
+			<td>
+				{Color.contrastWCAG21(hsl, text2) > 2.9 ? '✅' : '❌'}
+				{Color.contrastWCAG21(hsl, text2)}
+			</td>
 		</tr>
 	{/each}
 </table>
