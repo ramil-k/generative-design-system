@@ -20,7 +20,7 @@ let scan = async (path) => {
 export async function load() {
 	let pwd = cwd();
 
-	chdir('../growave/growave-monorepo/storefront-spa/src/');
+	chdir('.');
 	let newVar = await scan('.');
 	chdir(pwd);
 	return newVar;

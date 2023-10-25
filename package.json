@@ -1,5 +1,5 @@
 {
-	"name": "dir-explorer",
+	"name": "generative-design-system",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -32,8 +32,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"JSON2": "^0.1.0",
-		"colorjs.io": "^0.4.5",
-		"json2": "^0.4.0"
+		"colorjs.io": "^0.4.5"
 	}
 }
